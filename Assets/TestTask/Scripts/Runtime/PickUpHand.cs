@@ -33,6 +33,12 @@ namespace Useinov.TestTask.Runtime
 
         private void AttachItemToSocket()
         {
+            if (_pickUpSocket == null)
+            {
+                Debug.LogError("PickUpSocket is not set!");
+                return;
+            }
+
             // Attach item to hands
             _currentItem.transform.parent = _pickUpSocket.transform;
             _currentItem.transform.localPosition = Vector3.zero;

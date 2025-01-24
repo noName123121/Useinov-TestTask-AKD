@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Useinov.TestTask.Runtime
 {
     public class DesktopInputHandler : IInputHandler
     {
-        private const float _lookInputMultiplier = 400f;
+        private const float _lookInputMultiplier = 500f;
         private const float ItemDetectDistance = 2f;
 
         private Vector2 _moveInput;

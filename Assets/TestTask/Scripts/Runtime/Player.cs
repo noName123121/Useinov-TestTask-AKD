@@ -7,13 +7,10 @@ namespace Useinov.TestTask.Runtime
         [SerializeField] private Transform _orientation;
         [SerializeField] private MovementSettings _movementSettings;
         [SerializeField] private CameraControllerSettings _cameraFollowSettings;
-
         [SerializeField] private MobileInput _mobileInput;
 
-        private Camera _playerCamera;
-
-        private CharacterController _characterController;
         private IInputHandler _inputHandler;
+        private CharacterController _characterController;
         private IMover _mover;
         private CameraController _cameraController;
         private PickUpHand _pickUpHand;
@@ -49,7 +46,6 @@ namespace Useinov.TestTask.Runtime
             characterMover.Initialize(_characterController, transform, _orientation, _movementSettings);
             _mover = characterMover;
 
-            _playerCamera = Camera.main;
             _cameraController = new CameraController();
             _cameraController.Initialize(Camera.main.transform, _orientation, _cameraFollowSettings);
 
@@ -60,16 +56,7 @@ namespace Useinov.TestTask.Runtime
         {
             _inputHandler.ReadInput();
 
-            // Interact with detected object
-            IInteractable interactable = _inputHandler.GetInteractable();
-            if (interactable is PickableItem)
-            {
-                if (_pickUpHand.TryPickUp((PickableItem)interactable))
-                {
-                    interactable.Interact(this);
-                }
-            }
-            //
+            HandleInteract();
 
             _cameraController.Follow();
             _cameraController.Look(_inputHandler.GetLookInput());
@@ -77,6 +64,25 @@ namespace Useinov.TestTask.Runtime
             _mover.Move(_inputHandler.GetMoveInput());
 
             _inputHandler.ConsumeInput();
+        }
+
+        private void HandleInteract()
+        {
+            // Interact with detected object
+            IInteractable interactable = _inputHandler.GetInteractable();
+            if (interactable == null)
+                return;
+
+            if (interactable is PickableItem)
+            {
+                if (_pickUpHand.TryPickUp((PickableItem)interactable))
+                    interactable.Interact(this);
+            }
+            else
+            {
+                interactable.Interact(this);
+            }
+            //
         }
     }
 }

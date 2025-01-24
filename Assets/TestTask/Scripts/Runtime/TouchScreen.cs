@@ -9,13 +9,13 @@ namespace Useinov.TestTask.Runtime
         private Vector2 _touchDistance;
         private Vector2 _pointerLastPosition;
         private int _pointerId;
-        private bool _pressed;
+        private bool _isPressed;
 
-        public Vector2 InputVector => _touchDistance;
+        public Vector2 InputDirection => _touchDistance;
 
         void Update()
         {
-            if (_pressed)
+            if (_isPressed)
             {
                 if (_pointerId >= 0 && _pointerId < Input.touches.Length)
                 {
@@ -29,17 +29,24 @@ namespace Useinov.TestTask.Runtime
             }
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        /// <summary>
+        /// Click on the screen.
+        /// </summary>
+        /// <param name="pointerEventData">Data from the touch.</param>
+        public void OnPointerDown(PointerEventData pointerEventData)
         {
-            _pressed = true;
-            _pointerId = eventData.pointerId;
-            _pointerLastPosition = eventData.position;
+            _isPressed = true;
+            _pointerId = pointerEventData.pointerId;
+            _pointerLastPosition = pointerEventData.position;
         }
 
-
-        public void OnPointerUp(PointerEventData eventData)
+        /// <summary>
+        /// Click on the screen.
+        /// </summary>
+        /// <param name="pointerEventData">Data from the touch.</param>
+        public void OnPointerUp(PointerEventData pointerEventData)
         {
-            _pressed = false;
+            _isPressed = false;
         }
     }
 }

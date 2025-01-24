@@ -11,7 +11,7 @@ namespace Useinov.TestTask.Runtime
 
         private Vector2 _inputDirection;
 
-        public Vector2 InputVector => _inputDirection;
+        public Vector2 InputDirection => _inputDirection;
 
         /// <summary>
         /// Get the joystick UI

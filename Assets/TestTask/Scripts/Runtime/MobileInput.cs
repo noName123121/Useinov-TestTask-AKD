@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Useinov.TestTask.Runtime
@@ -9,8 +7,8 @@ namespace Useinov.TestTask.Runtime
         [SerializeField] private VirtualJoystick _joystick;
         [SerializeField] private TouchScreen _touchScreen;
 
-        public Vector2 GetMoveInput() => _joystick == null ? Vector2.zero : _joystick.InputVector;
+        public Vector2 GetMoveInput() => _joystick == null ? Vector2.zero : _joystick.InputDirection;
 
-        public Vector2 GetLookInput() => _touchScreen == null ? Vector2.zero : _touchScreen.InputVector;
+        public Vector2 GetLookInput() => _touchScreen == null ? Vector2.zero : _touchScreen.InputDirection;
     }
 }

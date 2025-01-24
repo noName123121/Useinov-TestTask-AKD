@@ -7,15 +7,15 @@ namespace Useinov.TestTask.Runtime
     {
         [SerializeField] public Transform CameraSocket;
 
-        [SerializeField, Min(0f)] public float xSensitivity;
-        [SerializeField, Min(0f)] public float ySensitivity;
+        [SerializeField, Min(0f)] public float XSensitivity;
+        [SerializeField, Min(0f)] public float YSensitivity;
+
+        [SerializeField, Range(-90f, 90f)] public float MinXClamp;
+        [SerializeField, Range(-90f, 90f)] public float MaxXClamp;
     }
 
     public class CameraController
     {
-        private const float MIN_X_CLAMP = -90f;
-        private const float MAX_X_CLAMP = 90f;
-
         private Transform _orientation, _playerCamera;
         private CameraControllerSettings _settings;
 
@@ -50,10 +50,10 @@ namespace Useinov.TestTask.Runtime
             if (_playerCamera == null)
                 return;
 
-            _yRotation += lookInput.x * Time.deltaTime * _settings.ySensitivity;
-            _xRotation -= lookInput.y * Time.deltaTime * _settings.xSensitivity;
+            _yRotation += lookInput.x * Time.deltaTime * _settings.YSensitivity;
+            _xRotation -= lookInput.y * Time.deltaTime * _settings.XSensitivity;
 
-            _xRotation = Mathf.Clamp(_xRotation, MIN_X_CLAMP, MAX_X_CLAMP);
+            _xRotation = Mathf.Clamp(_xRotation, _settings.MinXClamp, _settings.MaxXClamp);
 
             _playerCamera.transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0f);
             _orientation.rotation = Quaternion.Euler(0f, _yRotation, 0f);
