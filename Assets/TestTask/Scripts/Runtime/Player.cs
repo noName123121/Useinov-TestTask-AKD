@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Useinov.TestTask.Runtime
@@ -19,6 +16,12 @@ namespace Useinov.TestTask.Runtime
         private IInputHandler _inputHandler;
         private IMover _mover;
         private CameraController _cameraController;
+        private PickUpHand _pickUpHand;
+
+        public bool TryShipItem()
+        {
+            return _pickUpHand.TryRemove();
+        }
 
         private void Start()
         {
@@ -49,11 +52,24 @@ namespace Useinov.TestTask.Runtime
             _playerCamera = Camera.main;
             _cameraController = new CameraController();
             _cameraController.Initialize(Camera.main.transform, _orientation, _cameraFollowSettings);
+
+            _pickUpHand = GetComponent<PickUpHand>();
         }
 
         private void Update()
         {
             _inputHandler.ReadInput();
+
+            // Interact with detected object
+            IInteractable interactable = _inputHandler.GetInteractable();
+            if (interactable is PickableItem)
+            {
+                if (_pickUpHand.TryPickUp((PickableItem)interactable))
+                {
+                    interactable.Interact(this);
+                }
+            }
+            //
 
             _cameraController.Follow();
             _cameraController.Look(_inputHandler.GetLookInput());

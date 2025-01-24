@@ -4,25 +4,16 @@ using UnityEngine;
 
 namespace Useinov.TestTask.Runtime
 {
-    public interface IInputHandler
-    {
-        void ReadInput();
-        Vector2 GetMoveInput();
-        Vector2 GetLookInput();
-        GameObject GetInteractionObject();
-        void ConsumeInput();
-    }
-
     public class MobileInputHandler : IInputHandler
     {
-        private const float _lookInputMultiplier = 10f;
+        private const float LookInputMultiplier = 10f;
+        private const float ItemDetectDistance = 2f;
 
         private MobileInput _mobileInput;
 
         private Vector2 _moveInput;
         private Vector2 _lookInput;
-
-        private bool _isLooking;
+        private IInteractable _interactable;
 
         public void Initialize(MobileInput mobileInput)
         {
@@ -34,10 +25,25 @@ namespace Useinov.TestTask.Runtime
 
         public void ReadInput()
         {
-            //TODO: Make mobile input here
-
             _moveInput = _mobileInput.GetMoveInput();
             _lookInput = _mobileInput.GetLookInput();
+
+            RaycastHit hit = new RaycastHit();
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                if (Input.GetTouch(i).phase.Equals(TouchPhase.Began))
+                {
+                    // Construct a ray from the current touch coordinates
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(i).position);
+                    if (Physics.Raycast(ray, out hit, ItemDetectDistance))
+                    {
+                        if (hit.transform.gameObject.TryGetComponent(out IInteractable interactable))
+                        {
+                            _interactable = interactable;
+                        }
+                    }
+                }
+            }
         }
 
         public Vector2 GetMoveInput()
@@ -47,18 +53,19 @@ namespace Useinov.TestTask.Runtime
 
         public Vector2 GetLookInput()
         {
-            return _lookInput * _lookInputMultiplier;
+            return _lookInput * LookInputMultiplier;
         }
 
-        public GameObject GetInteractionObject()
+        public IInteractable GetInteractable()
         {
-            throw new System.NotImplementedException();
+            return _interactable;
         }
 
         public void ConsumeInput()
         {
             _moveInput = Vector2.zero;
             _lookInput = Vector2.zero;
+            _interactable = null;
         }
     }
 }
